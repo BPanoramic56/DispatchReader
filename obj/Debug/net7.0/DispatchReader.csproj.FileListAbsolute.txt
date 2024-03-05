@@ -1,0 +1,5 @@
+/Users/brunogomespascotto/Projects/DispatchReader/obj/Debug/net7.0/DispatchReader.csproj.AssemblyReference.cache
+/Users/brunogomespascotto/Projects/DispatchReader/obj/Debug/net7.0/DispatchReader.GeneratedMSBuildEditorConfig.editorconfig
+/Users/brunogomespascotto/Projects/DispatchReader/obj/Debug/net7.0/DispatchReader.AssemblyInfoInputs.cache
+/Users/brunogomespascotto/Projects/DispatchReader/obj/Debug/net7.0/DispatchReader.AssemblyInfo.cs
+/Users/brunogomespascotto/Projects/DispatchReader/obj/Debug/net7.0/DispatchReader.csproj.CoreCompileInputs.cache
