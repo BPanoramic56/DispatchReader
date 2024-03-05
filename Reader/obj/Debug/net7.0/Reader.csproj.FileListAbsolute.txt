@@ -29,3 +29,6 @@
 /Users/brunogomespascotto/Projects/DispatchReader/Reader/obj/Debug/net7.0/Reader.pdb
 /Users/brunogomespascotto/Projects/DispatchReader/Reader/obj/Debug/net7.0/Reader.genruntimeconfig.cache
 /Users/brunogomespascotto/Projects/DispatchReader/Reader/obj/Debug/net7.0/ref/Reader.dll
+/Users/brunogomespascotto/Projects/DispatchReader/Reader/bin/Debug/net7.0/BouncyCastle.Crypto.dll
+/Users/brunogomespascotto/Projects/DispatchReader/Reader/bin/Debug/net7.0/itextsharp.dll
+/Users/brunogomespascotto/Projects/DispatchReader/Reader/obj/Debug/net7.0/Reader.csproj.CopyComplete
