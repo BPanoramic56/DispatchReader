@@ -1,0 +1,19 @@
+{
+  "version": 2,
+  "dgSpecHash": "fsa7jVeHSQDk76PKu4moaFVpB5sU/74C2xciP9oLsltewEh6XEbWdCPZHS67io8JVx/hu7PJF8ZkSWS0sk0TtA==",
+  "success": true,
+  "projectFilePath": "/Users/brunogomespascotto/Projects/DispatchReader/GUI/GUI.csproj",
+  "expectedPackageFiles": [
+    "/Users/brunogomespascotto/.nuget/packages/microsoft.extensions.configuration/7.0.0/microsoft.extensions.configuration.7.0.0.nupkg.sha512",
+    "/Users/brunogomespascotto/.nuget/packages/microsoft.extensions.configuration.abstractions/7.0.0/microsoft.extensions.configuration.abstractions.7.0.0.nupkg.sha512",
+    "/Users/brunogomespascotto/.nuget/packages/microsoft.extensions.dependencyinjection/7.0.0/microsoft.extensions.dependencyinjection.7.0.0.nupkg.sha512",
+    "/Users/brunogomespascotto/.nuget/packages/microsoft.extensions.dependencyinjection.abstractions/7.0.0/microsoft.extensions.dependencyinjection.abstractions.7.0.0.nupkg.sha512",
+    "/Users/brunogomespascotto/.nuget/packages/microsoft.extensions.logging/7.0.0/microsoft.extensions.logging.7.0.0.nupkg.sha512",
+    "/Users/brunogomespascotto/.nuget/packages/microsoft.extensions.logging.abstractions/7.0.0/microsoft.extensions.logging.abstractions.7.0.0.nupkg.sha512",
+    "/Users/brunogomespascotto/.nuget/packages/microsoft.extensions.logging.debug/7.0.0/microsoft.extensions.logging.debug.7.0.0.nupkg.sha512",
+    "/Users/brunogomespascotto/.nuget/packages/microsoft.extensions.options/7.0.0/microsoft.extensions.options.7.0.0.nupkg.sha512",
+    "/Users/brunogomespascotto/.nuget/packages/microsoft.extensions.primitives/7.0.0/microsoft.extensions.primitives.7.0.0.nupkg.sha512",
+    "/Users/brunogomespascotto/.nuget/packages/microsoft.maui.graphics/7.0.101/microsoft.maui.graphics.7.0.101.nupkg.sha512"
+  ],
+  "logs": []
+}

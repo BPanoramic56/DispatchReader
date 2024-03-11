@@ -5,6 +5,8 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reader", "Reader\Reader.csproj", "{5F5B8849-1DD4-44B1-BF21-F1264A13BD11}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GUI", "GUI\GUI.csproj", "{80257810-40DA-4BAD-B142-5CDB308A6998}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{5F5B8849-1DD4-44B1-BF21-F1264A13BD11}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5F5B8849-1DD4-44B1-BF21-F1264A13BD11}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5F5B8849-1DD4-44B1-BF21-F1264A13BD11}.Release|Any CPU.Build.0 = Release|Any CPU
+		{80257810-40DA-4BAD-B142-5CDB308A6998}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{80257810-40DA-4BAD-B142-5CDB308A6998}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{80257810-40DA-4BAD-B142-5CDB308A6998}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{80257810-40DA-4BAD-B142-5CDB308A6998}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
