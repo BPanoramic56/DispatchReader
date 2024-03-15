@@ -224,7 +224,6 @@ public class AirportInformation
         {"Montpelier", "MPV"},
         {"Rutland", "RUT"},
         {"Virginia", "VA"},
-        {"Dulles", "IAD"},
         {"Newport News", "PHF"},
         {"Norfolk", "ORF"},
         {"Richmond", "RIC"},
@@ -250,13 +249,18 @@ public class AirportInformation
 
     public AirportInformation(string name)
     {
-        if (AcronymToName.ContainsKey(name))
-            this.AirportName =  AcronymToName[name];
+        string airport = name;
+        if (name.StartsWith("K"))
+        {
+            airport = name.Substring(1, name.Length-1);
+        }
+        if (NameToAcronym.ContainsKey(airport))
+            this.AirportAcronym =  NameToAcronym[airport];
         else
-            this.AirportName = name;
-        if (NameToAcronym.ContainsKey(name))
-            this.AirportAcronym = NameToAcronym[name];
+            this.AirportAcronym = airport;
+        if (AcronymToName.ContainsKey(airport))
+            this.AirportName = AcronymToName[airport];
         else
-            this.AirportAcronym = name;
+            this.AirportName = airport;
     }
 }

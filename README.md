@@ -3,3 +3,4 @@
 
 # Timeline
     March 5th, 2024 - Initial commit with the solution and main dependencies
+    March 11th, 2024 - Added main GUI and setup for it

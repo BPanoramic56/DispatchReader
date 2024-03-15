@@ -84,9 +84,9 @@ public class DReader
                 }
                 if (firstPage[i+1].Equals("OUT:"))
                 {
-                    InitialInfo["TaxiOut"] = firstPage[i+2];
-                    DepartureAirportInfo = new AirportInformation(firstPage[i+3].Substring(0, firstPage[i+3].IndexOf('/')));
-                    ArrivalAirportInfo = new AirportInformation(firstPage[i+5].Substring(0, firstPage[i+5].IndexOf('/')));
+                    InitialInfo["TaxiOut"]  = firstPage[i+2];
+                    DepartureAirportInfo    = new AirportInformation(firstPage[i+3].Substring(0, firstPage[i+3].IndexOf('/')));
+                    ArrivalAirportInfo      = new AirportInformation(firstPage[i+5].Substring(0, firstPage[i+5].IndexOf('/')));
                 }
                 if (InitialInfo.ContainsKey("TaxiIn") && InitialInfo.ContainsKey("TaxiOut"))
                 {
@@ -123,27 +123,27 @@ public class DReader
             Console.WriteLine(current + " - " + Regex.IsMatch(current, DateFormatRegex));
             // Thread.Sleep(400);
         }
-        InitialInfo["DepartureAirportName"] = DepartureAirportInfo.AirportName;
-        InitialInfo["DepartureAirportAcronym"] = DepartureAirportInfo.AirportAcronym;
-        InitialInfo["ArrivalAirportName"] = ArrivalAirportInfo.AirportName;
-        InitialInfo["ArrivalAirportAcronym"] = ArrivalAirportInfo.AirportAcronym;
+        InitialInfo["DepartureAirportName"]     = DepartureAirportInfo.AirportName;
+        InitialInfo["DepartureAirportAcronym"]  = DepartureAirportInfo.AirportAcronym;
+        InitialInfo["ArrivalAirportName"]       = ArrivalAirportInfo.AirportName;
+        InitialInfo["ArrivalAirportAcronym"]    = ArrivalAirportInfo.AirportAcronym;
     }
 
    public string GetInfo(string request)
    {
-        if (request.Equals("Help") || request.Equals("All"))
+        if (InitialInfo.ContainsKey(request))
         {
-            string builder = ""; // TODO: Make into StringBuilder
+            return InitialInfo[request];
+        }
+        else if (request.Equals("Help") || request.Equals("All"))
+        {
+            string builder = "The following information was taken from the dispatch. You can access them by calling this method (GetInfo) with the given information name:"; // TODO: Make into StringBuilder
             foreach (string key in InitialInfo.Keys)
             {
                 // builder.Append(key);
-                builder += key + ", ";
+                builder += "\n\t" + key + ", ";
             }
             return builder.ToString(); // TODO: Delete last comma
-        }
-        else if (InitialInfo.ContainsKey(request))
-        {
-            return InitialInfo[request];
         }
         return "Information not available or invalid key";
    }
