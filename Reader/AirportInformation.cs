@@ -5,10 +5,7 @@ using System.Linq;
 
 public class AirportInformation
 {
-    public string AirportAcronym;
-    public string AirportName;
-
-    private static Dictionary<string, string> NameToAcronym = new(){
+    private static Dictionary<string, string> AirportNameToAcronym = new(){
         {"Alabama", "AL"},
         {"Birmingham International Airport", "BHM"},
         {"Dothan Regional Airport", "DHN"},
@@ -243,24 +240,59 @@ public class AirportInformation
         {"Casper", "CPR"},
         {"Cheyenne", "CYS"},
         {"Jackson Hole", "JAC"},
-        {"Rock Springs", "RKS"}};
+        {"Rock Springs", "RKS"}
+    };
 
-    private static Dictionary<string, string> AcronymToName = NameToAcronym.ToDictionary(pair => pair.Value, pair => pair.Key);
+    private static Dictionary<string, string> AirportAcronymToName = AirportNameToAcronym.ToDictionary(pair => pair.Value, pair => pair.Key);
 
-    public AirportInformation(string name)
-    {
-        string airport = name;
-        if (name.StartsWith("K"))
+    private static Dictionary<string, string> AirlinetoIcao = new(){
+        {"Alaska Airlines",         "ASA" },
+        {"Allegiant Air",           "AAY" },
+        {"American Airlines",       "AAL" },
+        {"Avelo Airlines",          "VXP" },
+        {"Breeze Airways",          "MXY" },
+        {"Delta Air Lines",         "DAL" },
+        {"Eastern Airlines",        "EAL" },
+        {"Frontier Airlines",       "FFT" },
+        {"Hawaiian Airlines",       "HAL" },
+        {"JetBlue",                 "JBU" },
+        {"New Pacific Airlines",    "RVF" },
+        {"Southwest Airlines",      "SWA" },
+        {"Spirit Airlines",         "NKS" },
+        {"Sun Country Airlines",    "SCX" },
+        {"United Airlines",         "UAL" }
+    };
+
+    private static Dictionary<string, string> IcaoToAirline = AirlinetoIcao.ToDictionary(pair => pair.Value, pair => pair.Key);
+
+
+    public AirportInformation(){}
+
+    public string GetAirportFullName(string AirportAcronym){
+        if (AirportAcronym.StartsWith("K"))
         {
-            airport = name.Substring(1, name.Length-1);
+            AirportAcronym = AirportAcronym.Substring(1, AirportAcronym.Length-1);
         }
-        if (NameToAcronym.ContainsKey(airport))
-            this.AirportAcronym =  NameToAcronym[airport];
-        else
-            this.AirportAcronym = airport;
-        if (AcronymToName.ContainsKey(airport))
-            this.AirportName = AcronymToName[airport];
-        else
-            this.AirportName = airport;
+        if (AirportAcronymToName.ContainsKey(AirportAcronym))
+            return AirportAcronymToName[AirportAcronym];
+        return AirportAcronym;
+    }
+
+    public string GetAirportAcronym(string AirportName){
+        if (AirportNameToAcronym.ContainsKey(AirportName))
+            return AirportNameToAcronym[AirportName];
+        return AirportName;
+    }
+
+    public string GetAirlineName(string ICAO){
+        if (IcaoToAirline.ContainsKey(ICAO))
+            return IcaoToAirline[ICAO];
+        return ICAO;
+    }
+
+    public string GetAirlineAcronym(string AirlineName){
+        if (AirlinetoIcao.ContainsKey(AirlineName))
+            return AirlinetoIcao[AirlineName];
+        return AirlineName;
     }
 }

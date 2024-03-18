@@ -12,8 +12,7 @@ public class DReader
     private Dictionary<int, List<string>>   PageIndexDict = new();
     private Dictionary<string,string>       InitialInfo = new();
     
-    public AirportInformation DepartureAirportInfo;
-    public AirportInformation ArrivalAirportInfo;
+    public AirportInformation AirportInfo = new();
 
     public DReader(string FilePathInit)
     {
@@ -70,6 +69,7 @@ public class DReader
             {
                 InitialInfo["AirlineName"] = string.Join(" ", AirlineName);
                 break;
+                // if ()
             }
             AirlineName.Add(firstPage[i]);
         }
@@ -85,8 +85,10 @@ public class DReader
                 if (firstPage[i+1].Equals("OUT:"))
                 {
                     InitialInfo["TaxiOut"]  = firstPage[i+2];
-                    DepartureAirportInfo    = new AirportInformation(firstPage[i+3].Substring(0, firstPage[i+3].IndexOf('/')));
-                    ArrivalAirportInfo      = new AirportInformation(firstPage[i+5].Substring(0, firstPage[i+5].IndexOf('/')));
+                    InitialInfo["DepartureAirportName"]     = AirportInfo.GetAirportFullName(firstPage[i+3].Substring(0, firstPage[i+3].IndexOf('/')));
+                    InitialInfo["DepartureAirportAcronym"]  = firstPage[i+3].Substring(0, firstPage[i+3].IndexOf('/'));
+                    InitialInfo["ArrivalAirportName"]       = AirportInfo.GetAirportFullName(firstPage[i+5].Substring(0, firstPage[i+5].IndexOf('/')));
+                    InitialInfo["ArrivalAirportAcronym"]    = firstPage[i+5].Substring(0, firstPage[i+5].IndexOf('/'));
                 }
                 if (InitialInfo.ContainsKey("TaxiIn") && InitialInfo.ContainsKey("TaxiOut"))
                 {
@@ -123,10 +125,6 @@ public class DReader
             Console.WriteLine(current + " - " + Regex.IsMatch(current, DateFormatRegex));
             // Thread.Sleep(400);
         }
-        InitialInfo["DepartureAirportName"]     = DepartureAirportInfo.AirportName;
-        InitialInfo["DepartureAirportAcronym"]  = DepartureAirportInfo.AirportAcronym;
-        InitialInfo["ArrivalAirportName"]       = ArrivalAirportInfo.AirportName;
-        InitialInfo["ArrivalAirportAcronym"]    = ArrivalAirportInfo.AirportAcronym;
     }
 
    public string GetInfo(string request)
@@ -137,7 +135,8 @@ public class DReader
         }
         else if (request.Equals("Help") || request.Equals("All"))
         {
-            string builder = "The following information was taken from the dispatch. You can access them by calling this method (GetInfo) with the given information name:"; // TODO: Make into StringBuilder
+            string builder = "The following information was taken from the dispatch. You can access them by calling this method (GetInfo) with the given information name:"; 
+            // TODO: Make into StringBuilder
             foreach (string key in InitialInfo.Keys)
             {
                 // builder.Append(key);
