@@ -5,12 +5,13 @@ using iTextSharp.text.pdf;
 using Microsoft.AspNetCore.Server.IIS.Core;
 using System.Text.RegularExpressions;
 using Reader;
+using System.Collections.Concurrent;
 public class DReader
 {
-    private string                          FilePath;
-    private List<string>                    AbsoluteTokenList = new();
-    private Dictionary<int, List<string>>   PageIndexDict = new();
-    private Dictionary<string,string>       InitialInfo = new();
+    private string                                  FilePath;
+    private List<string>                            AbsoluteTokenList = new();
+    private Dictionary<int, List<string>>           PageIndexDict = new();
+    private ConcurrentDictionary<string,string>     InitialInfo = new();
     
     public AirportInformation AirportInfo = new();
 
@@ -35,6 +36,8 @@ public class DReader
                         {
                             stringsList.Add(s);
                             AbsoluteTokenList.Add(s);
+                            // Console.WriteLine(s);
+                            // Thread.Sleep(1000);
                         }
                     }
                 }
@@ -47,53 +50,65 @@ public class DReader
 
     /// <summary>
     /// <para>
-    ///     Returns the entire dispatch release, as a string, with each token joined by new lines (\n)
+    ///     Returns the entire dispatch release, as a string, with each token joined by a space
     /// </para>
     /// </summary>
     /// <returns> A string representation of the release </returns>
     public string GetFullDispatch()
     {
-        return string.Join("\n", this.AbsoluteTokenList.ToArray());
+        return string.Join(" ", this.AbsoluteTokenList.ToArray());
     }
 
-    private void FirstPageDissection()
+    private void GetAirlineNameFromDispatch(List<string> firstPage)
     {
-        List<string> firstPage      = PageIndexDict[1];
         List<string> AirlineName    = new();
-        string HifenIntegersRegex   = @"(?<=-)\d+$";
-        string DateFormatRegex      = @"\d{2}/\d{2}/\d{4}";
-
         for (int i = 0; i < firstPage.Count; i++)
         {
             if (firstPage[i].Equals("IFR"))
             {
                 InitialInfo["AirlineName"] = string.Join(" ", AirlineName);
                 break;
-                // if ()
             }
             AirlineName.Add(firstPage[i]);
         }
+    }
+
+    private void GetTaxiInformationFromDispatch(List<string> firstPage, int i)
+    {
+        if (firstPage[i+1].Equals("IN:"))
+        {
+            InitialInfo["TaxiIn"] = firstPage[i+2];
+        }
+        if (firstPage[i+1].Equals("OUT:"))
+        {
+            InitialInfo["TaxiOut"]                  = firstPage[i+2];
+            InitialInfo["DepartureAirportName"]     = AirportInfo.GetAirportFullName(firstPage[i+3].Substring(0, firstPage[i+3].IndexOf('/')));
+            InitialInfo["DepartureAirportAcronym"]  = firstPage[i+3].Substring(0, firstPage[i+3].IndexOf('/'));
+            InitialInfo["ArrivalAirportName"]       = AirportInfo.GetAirportFullName(firstPage[i+5].Substring(0, firstPage[i+5].IndexOf('/')));
+            InitialInfo["ArrivalAirportAcronym"]    = firstPage[i+5].Substring(0, firstPage[i+5].IndexOf('/'));
+        }
+        if (InitialInfo.ContainsKey("TaxiOut") && InitialInfo.ContainsKey("TaxiIn"))
+        {
+            InitialInfo["Taxi"] = "In: " + InitialInfo["TaxiIn"]  + "; Out:" + InitialInfo["TaxiOut"];
+        }
+    }
+    private void FirstPageDissection()
+    {
+        List<string> firstPage      = PageIndexDict[1];
+        string HifenIntegersRegex   = @"(?<=-)\d+$";
+        string DateFormatRegex      = @"\d{2}/\d{2}/\d{4}";
+
+        new Thread(() => GetAirlineNameFromDispatch(PageIndexDict[1])).Start();
+        // GetAirlineNameFromDispatch(PageIndexDict[1]);
         for (int i = 0; i < firstPage.Count; i++)
         {
+            // Console.WriteLine(firstPage[i]);
             string current = firstPage[i];
             if (current.Equals("TAXI"))
             {
-                if (firstPage[i+1].Equals("IN:"))
-                {
-                    InitialInfo["TaxiIn"] = firstPage[i+2];
-                }
-                if (firstPage[i+1].Equals("OUT:"))
-                {
-                    InitialInfo["TaxiOut"]  = firstPage[i+2];
-                    InitialInfo["DepartureAirportName"]     = AirportInfo.GetAirportFullName(firstPage[i+3].Substring(0, firstPage[i+3].IndexOf('/')));
-                    InitialInfo["DepartureAirportAcronym"]  = firstPage[i+3].Substring(0, firstPage[i+3].IndexOf('/'));
-                    InitialInfo["ArrivalAirportName"]       = AirportInfo.GetAirportFullName(firstPage[i+5].Substring(0, firstPage[i+5].IndexOf('/')));
-                    InitialInfo["ArrivalAirportAcronym"]    = firstPage[i+5].Substring(0, firstPage[i+5].IndexOf('/'));
-                }
-                if (InitialInfo.ContainsKey("TaxiIn") && InitialInfo.ContainsKey("TaxiOut"))
-                {
-                    InitialInfo["Taxi"] = "In: " + InitialInfo["TaxiIn"]  + "; Out:" + InitialInfo["TaxiOut"];
-                }
+                Thread TaxiThread = new Thread(() => GetTaxiInformationFromDispatch(PageIndexDict[1], i));
+                TaxiThread.Start();
+                TaxiThread.Join();
             }
             else if (current.Equals("DEPART") || current.Equals("DEPART:"))
             {
@@ -111,9 +126,7 @@ public class DReader
             }
             else if (current.Contains("RELEASE"))
             {
-
-                Match match = Regex.Match(current, HifenIntegersRegex);
-                InitialInfo["Release"] = match.Value;
+                InitialInfo["Release"] = Regex.Match(current, HifenIntegersRegex).ToString();
             }
             else if (Regex.IsMatch(current, DateFormatRegex))
             {
@@ -122,7 +135,7 @@ public class DReader
                 InitialInfo["Hour"] = firstPage[i+1];
                 InitialInfo["Time"] = InitialInfo["Date"] + " " + InitialInfo["Hour"];
             }
-            Console.WriteLine(current + " - " + Regex.IsMatch(current, DateFormatRegex));
+            // Console.WriteLine(current + " - " +/ Regex.IsMatch(current, DateFormatRegex));
             // Thread.Sleep(400);
         }
     }
@@ -137,6 +150,7 @@ public class DReader
         {
             string builder = "The following information was taken from the dispatch. You can access them by calling this method (GetInfo) with the given information name:"; 
             // TODO: Make into StringBuilder
+            
             foreach (string key in InitialInfo.Keys)
             {
                 // builder.Append(key);
