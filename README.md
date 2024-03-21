@@ -4,3 +4,4 @@
 # Timeline
     March 5th, 2024 - Initial commit with the solution and main dependencies
     March 11th, 2024 - Added main GUI and setup for it
+    March 19th, 2024 - Started multi-threading implementation for faster processing
