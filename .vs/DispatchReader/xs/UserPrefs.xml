@@ -1,0 +1,29 @@
+﻿<Properties StartupConfiguration="{56359E5E-0D36-4259-9881-26A9DB715A4B}|Default">
+  <MonoDevelop.Ide.Workbench ActiveDocument="GUI/MainPage.xaml">
+    <Files>
+      <File FileName="GUI/GUI.xaml" Line="1" Column="1" />
+      <File FileName="GUI/MainPage.xaml.cs" Line="1" Column="1" />
+      <File FileName="GUI/MainPage.xaml" Line="18" Column="19" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State name="__root__">
+          <Node name="DispatchReader" expanded="True">
+            <Node name="GUI" selected="True">
+              <Node name="GUI.xaml" expanded="True" />
+              <Node name="MainPage.xaml" expanded="True" />
+            </Node>
+          </Node>
+        </State>
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.ItemProperties.Reader PreferredExecutionTarget="/System/Volumes/Preboot/Cryptexes/App/System/Applications/Safari.app" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MultiItemStartupConfigurations />
+  <MonoDevelop.Ide.ItemProperties.GUI PreferredExecutionTarget="MyAppleMacCatalystID" />
+</Properties>

@@ -13,7 +13,7 @@ public class Tester
         SpeedTester T1 = new(10, @"/Users/brunogomespascotto/Downloads/KSEAKJFK_PDF_1709363976.pdf");
         SpeedTester T2 = new(10, @"/Users/brunogomespascotto/Downloads/KLASKPHX_PDF_1710018399.pdf");
 
-        T1.ConjoinedTest(new SpeedTester[]{T1,T2}, 1);
+        // T1.ConjoinedTest(new SpeedTester[]{T1,T2}, 1);
 
         T2.SingleTest();
         T1.SingleTest();
@@ -75,7 +75,7 @@ class SpeedTester{
             // Console.WriteLine(reader.GetFullDispatch());
             Console.WriteLine("\nAirline Name: \t\t"            + reader.GetInfo("AirlineName"));
             Console.WriteLine("Time: \t\t"                      + reader.GetInfo("Time"));
-            Console.WriteLine("Day: \t\t"                       + reader.GetInfo("Day"));
+            Console.WriteLine("Date: \t\t"                      + reader.GetInfo("Date"));
             Console.WriteLine("Hour: \t\t"                      + reader.GetInfo("Hour"));
             Console.WriteLine("Departure: \t\t"                 + reader.GetInfo("Departure"));
             Console.WriteLine("Arrival: \t\t"                   + reader.GetInfo("Arrival"));
@@ -87,6 +87,7 @@ class SpeedTester{
             Console.WriteLine("Departure Airport Acronym:\t\t"  + reader.GetInfo("DepartureAirportAcronym"));
             Console.WriteLine("Arrival Airport Name:\t\t"       + reader.GetInfo("ArrivalAirportName"));
             Console.WriteLine("Arrival Airport Acronym:\t\t"    + reader.GetInfo("ArrivalAirportAcronym"));
+            Console.WriteLine("Proposed Departure time:\t\t"    + reader.GetInfo("ProposedDepartureTime"));
             Console.WriteLine("Help: \t\t"                      + reader.GetInfo("All"));
 
             watch.Stop();

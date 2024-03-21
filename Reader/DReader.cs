@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Server.IIS.Core;
 using System.Text.RegularExpressions;
 using Reader;
 using System.Collections.Concurrent;
+using System.Security.Cryptography.Xml;
+using Org.BouncyCastle.Asn1.Cms;
+using System.Text;
 public class DReader
 {
     private string                                  FilePath;
@@ -94,16 +97,16 @@ public class DReader
     }
     private void FirstPageDissection()
     {
-        List<string> firstPage      = PageIndexDict[1];
+        List<string> FirstPage      = PageIndexDict[1];
         string HifenIntegersRegex   = @"(?<=-)\d+$";
-        string DateFormatRegex      = @"\d{2}/\d{2}/\d{4}";
+        string DateFormatRegex      = @"(0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])[- /.][0-9]{2}";
 
         new Thread(() => GetAirlineNameFromDispatch(PageIndexDict[1])).Start();
         // GetAirlineNameFromDispatch(PageIndexDict[1]);
-        for (int i = 0; i < firstPage.Count; i++)
+        for (int i = 0; i < FirstPage.Count; i++)
         {
             // Console.WriteLine(firstPage[i]);
-            string current = firstPage[i];
+            string current = FirstPage[i];
             if (current.Equals("TAXI"))
             {
                 Thread TaxiThread = new Thread(() => GetTaxiInformationFromDispatch(PageIndexDict[1], i));
@@ -113,16 +116,16 @@ public class DReader
             else if (current.Equals("DEPART") || current.Equals("DEPART:"))
             {
                 if (InitialInfo.ContainsKey("Departure"))
-                    InitialInfo["Departure"] +=  " " + firstPage[i+1];
+                    InitialInfo["Departure"] +=  " " + FirstPage[i+1];
                 else
-                    InitialInfo["Departure"] = firstPage[i+1];
+                    InitialInfo["Departure"] = FirstPage[i+1];
             }
             else if (current.Equals("ARRIVE") || current.Equals("ARRIVE:"))
             { 
                 if (InitialInfo.ContainsKey("Arrival"))
-                    InitialInfo["Arrival"] += " " + firstPage[i+1];
+                    InitialInfo["Arrival"] += " " + FirstPage[i+1];
                 else
-                    InitialInfo["Arrival"] = firstPage[i+1];
+                    InitialInfo["Arrival"] = FirstPage[i+1];
             }
             else if (current.Contains("RELEASE"))
             {
@@ -132,12 +135,39 @@ public class DReader
             {
                 Match match = Regex.Match(current, DateFormatRegex);
                 InitialInfo["Date"] = match.Value;
-                InitialInfo["Hour"] = firstPage[i+1];
+                InitialInfo["Hour"] = FirstPage[i+1];
                 InitialInfo["Time"] = InitialInfo["Date"] + " " + InitialInfo["Hour"];
             }
-            // Console.WriteLine(current + " - " +/ Regex.IsMatch(current, DateFormatRegex));
-            // Thread.Sleep(400);
+            else if (current.Contains("TIME:"))
+            {
+                InitialInfo["ProposedDepartureTime"] = FirstPage[i+1];
+            }
+            // Console.WriteLine(current + " - " + Regex.IsMatch(current, DateFormatRegex));
+            // Thread.Sleep(200);
         }
+        TimeDifference();
+    }
+
+    private void TimeDifference(){
+        string timeString1 = InitialInfo["Hour"];
+        string timeString2 = InitialInfo["ProposedDepartureTime"];
+
+        // Extract hour and minute from the strings
+        int hours1 = int.Parse(timeString1.Substring(0, 2));
+        int minutes1 = int.Parse(timeString1.Substring(2, 2));
+
+        int hours2 = int.Parse(timeString2.Substring(0, 2));
+        int minutes2 = int.Parse(timeString2.Substring(2, 2));
+
+        // Create DateTime objects for comparison
+        DateTime time1 = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, hours1, minutes1, 0);
+        DateTime time2 = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, hours2, minutes2, 0);
+
+        // Calculate the difference
+        TimeSpan difference = time2 - time1;
+
+        // Output the difference
+        InitialInfo["ProposedDepartureTime"] = $"{InitialInfo["ProposedDepartureTime"]} [+{difference}]";
     }
 
    public string GetInfo(string request)
@@ -148,15 +178,14 @@ public class DReader
         }
         else if (request.Equals("Help") || request.Equals("All"))
         {
-            string builder = "The following information was taken from the dispatch. You can access them by calling this method (GetInfo) with the given information name:"; 
-            // TODO: Make into StringBuilder
-            
-            foreach (string key in InitialInfo.Keys)
+            StringBuilder builder = new StringBuilder( "The following information was taken from the dispatch. You can access them by calling this method (GetInfo) with the given information name:");
+            List<string> keys = InitialInfo.Keys.ToList<string>();
+            keys.Sort();
+            foreach (string key in keys)
             {
-                // builder.Append(key);
-                builder += "\n\t" + key + ", ";
+                builder.Append("\n\t" + key);
             }
-            return builder.ToString(); // TODO: Delete last comma
+            return builder.ToString();
         }
         return "Information not available or invalid key";
    }
