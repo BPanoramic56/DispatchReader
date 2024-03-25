@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-public class AirportInformation
+public class ExternalInformation
 {
     private static Dictionary<string, string> AirportNameToAcronym = new(){
         {"Alabama", "AL"},
@@ -265,8 +265,16 @@ public class AirportInformation
 
     private static Dictionary<string, string> IcaoToAirline = AirlinetoIcao.ToDictionary(pair => pair.Value, pair => pair.Key);
 
+    private static Dictionary<string, Dictionary<string, string>> AirplaneTypeToDescription = new(){
+        {
+            "A321-200", new Dictionary<string, string>()
+            {
+                {"Full Name", "e"}
+            }
+        },
+    };
 
-    public AirportInformation(){}
+    public ExternalInformation(){}
 
     public string GetAirportFullName(string AirportAcronym){
         if (AirportAcronym.StartsWith("K"))

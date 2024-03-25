@@ -13,7 +13,7 @@ public class Tester
         SpeedTester T1 = new(10, @"/Users/brunogomespascotto/Downloads/KSEAKJFK_PDF_1709363976.pdf");
         SpeedTester T2 = new(10, @"/Users/brunogomespascotto/Downloads/KLASKPHX_PDF_1710018399.pdf");
 
-        // T1.ConjoinedTest(new SpeedTester[]{T1,T2}, 1);
+        // T1.ConjoinedTest(new SpeedTester[]{T1,T2}, 1000);
 
         T2.SingleTest();
         T1.SingleTest();
@@ -41,22 +41,6 @@ class SpeedTester{
             watch.Start();
 
             DReader reader = new(this.Filename);
-            // Console.WriteLine(reader.GetFullDispatch());
-            // Console.WriteLine("\nAirline Name: \t\t"            + reader.GetInfo("AirlineName"));
-            // Console.WriteLine("Time: \t\t"                      + reader.GetInfo("Time"));
-            // Console.WriteLine("Day: \t\t"                       + reader.GetInfo("Day"));
-            // Console.WriteLine("Hour: \t\t"                      + reader.GetInfo("Hour"));
-            // Console.WriteLine("Departure: \t\t"                 + reader.GetInfo("Departure"));
-            // Console.WriteLine("Arrival: \t\t"                   + reader.GetInfo("Arrival"));
-            // Console.WriteLine("Release:\t\t"                    + reader.GetInfo("Release"));
-            // Console.WriteLine("Taxi In:\t\t"                    + reader.GetInfo("TaxiIn"));
-            // Console.WriteLine("Taxi Out:\t\t"                   + reader.GetInfo("TaxiOut"));
-            // Console.WriteLine("Taxi:\t\t"                       + reader.GetInfo("Taxi"));
-            // Console.WriteLine("Departure Airport Name:\t\t"     + reader.GetInfo("DepartureAirportName"));
-            // Console.WriteLine("Departure Airport Acronym:\t\t"  + reader.GetInfo("DepartureAirportAcronym"));
-            // Console.WriteLine("Arrival Airport Name:\t\t"       + reader.GetInfo("ArrivalAirportName"));
-            // Console.WriteLine("Arrival Airport Acronym:\t\t"    + reader.GetInfo("ArrivalAirportAcronym"));
-            // Console.WriteLine("Help: \t\t"                      + reader.GetInfo("All"));
 
             watch.Stop();
             TimeValues.Add(watch.ElapsedMilliseconds);
@@ -68,29 +52,29 @@ class SpeedTester{
     }
 
     public void SingleTest(){
-         var watch = new System.Diagnostics.Stopwatch();
+        // Next section gets the biggest key and it's length, this is just made so that the printed column of information is alligned
+        DReader ReaderParser = new(this.Filename);
+        int maxKeyLength = 0;
+        foreach (var key in ReaderParser.GetInfo("Tokens").Split(", "))
+        {
+            if (key.Length > maxKeyLength)
+                maxKeyLength = key.Length;
+        }
+        maxKeyLength += 10;
+
+
+        var watch = new System.Diagnostics.Stopwatch();
             watch.Start();
 
-            DReader reader = new(this.Filename);
-            // Console.WriteLine(reader.GetFullDispatch());
-            Console.WriteLine("\nAirline Name: \t\t"            + reader.GetInfo("AirlineName"));
-            Console.WriteLine("Time: \t\t"                      + reader.GetInfo("Time"));
-            Console.WriteLine("Date: \t\t"                      + reader.GetInfo("Date"));
-            Console.WriteLine("Hour: \t\t"                      + reader.GetInfo("Hour"));
-            Console.WriteLine("Departure: \t\t"                 + reader.GetInfo("Departure"));
-            Console.WriteLine("Arrival: \t\t"                   + reader.GetInfo("Arrival"));
-            Console.WriteLine("Release:\t\t"                    + reader.GetInfo("Release"));
-            Console.WriteLine("Taxi In:\t\t"                    + reader.GetInfo("TaxiIn"));
-            Console.WriteLine("Taxi Out:\t\t"                   + reader.GetInfo("TaxiOut"));
-            Console.WriteLine("Taxi:\t\t"                       + reader.GetInfo("Taxi"));
-            Console.WriteLine("Departure Airport Name:\t\t"     + reader.GetInfo("DepartureAirportName"));
-            Console.WriteLine("Departure Airport Acronym:\t\t"  + reader.GetInfo("DepartureAirportAcronym"));
-            Console.WriteLine("Arrival Airport Name:\t\t"       + reader.GetInfo("ArrivalAirportName"));
-            Console.WriteLine("Arrival Airport Acronym:\t\t"    + reader.GetInfo("ArrivalAirportAcronym"));
-            Console.WriteLine("Proposed Departure time:\t\t"    + reader.GetInfo("ProposedDepartureTime"));
-            Console.WriteLine("Help: \t\t"                      + reader.GetInfo("All"));
+        DReader reader = new(this.Filename);
+        foreach (string s in reader.GetInfo("Tokens").Split(", "))
+        {
+            int spacesToAdd = maxKeyLength - s.Length + 1; // Calculate the number of spaces to add
+            string spaces = new string(' ', spacesToAdd); // Create a string of spaces
+            Console.WriteLine($"{s}:{spaces}{reader.GetInfo(s)}");
+        } 
 
-            watch.Stop();
-            Console.WriteLine($"Execution Time: {watch.ElapsedMilliseconds}ms");
+        watch.Stop();
+        Console.WriteLine($"Execution Time: {watch.ElapsedMilliseconds}ms\n");
     }
 }

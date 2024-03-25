@@ -7,8 +7,8 @@ using System.Text.RegularExpressions;
 using Reader;
 using System.Collections.Concurrent;
 using System.Security.Cryptography.Xml;
-using Org.BouncyCastle.Asn1.Cms;
 using System.Text;
+using System.Xml.Serialization;
 public class DReader
 {
     private string                                  FilePath;
@@ -16,7 +16,7 @@ public class DReader
     private Dictionary<int, List<string>>           PageIndexDict = new();
     private ConcurrentDictionary<string,string>     InitialInfo = new();
     
-    public AirportInformation AirportInfo = new();
+    public ExternalInformation AirportInfo = new();
 
     public DReader(string FilePathInit)
     {
@@ -40,7 +40,7 @@ public class DReader
                             stringsList.Add(s);
                             AbsoluteTokenList.Add(s);
                             // Console.WriteLine(s);
-                            // Thread.Sleep(1000);
+                            // Thread.Sleep(200);
                         }
                     }
                 }
@@ -109,7 +109,7 @@ public class DReader
             string current = FirstPage[i];
             if (current.Equals("TAXI"))
             {
-                Thread TaxiThread = new Thread(() => GetTaxiInformationFromDispatch(PageIndexDict[1], i));
+                Thread TaxiThread = new(() => GetTaxiInformationFromDispatch(PageIndexDict[1], i));
                 TaxiThread.Start();
                 TaxiThread.Join();
             }
@@ -142,10 +142,36 @@ public class DReader
             {
                 InitialInfo["ProposedDepartureTime"] = FirstPage[i+1];
             }
+            else if (current.Contains("REMARKS:"))
+            {
+                Thread TaxiThread = new(() => GetRemarksFromDispatch(PageIndexDict[1], i));
+                TaxiThread.Start();
+                TaxiThread.Join();
+            }
             // Console.WriteLine(current + " - " + Regex.IsMatch(current, DateFormatRegex));
             // Thread.Sleep(200);
         }
         TimeDifference();
+    }
+
+    private void GetRemarksFromDispatch(List<string> list, int i)
+    {
+        while (true)
+        {
+            string current = list[i];
+            if (current.Any(char.IsDigit))
+            {
+                InitialInfo["FLT"]      = list[i];
+                InitialInfo["AC"]       = list[i+1];
+                InitialInfo["Nose"]     = list[i+2];
+                InitialInfo["Type"]     = list[i+3];
+                InitialInfo["Cap"]      = list[i+4];
+                InitialInfo["ATOG"]     = list[i+5];
+                InitialInfo["LM"]       = list[i+6];
+                break;
+            }
+            i++;
+        }
     }
 
     private void TimeDifference(){
@@ -170,7 +196,7 @@ public class DReader
         InitialInfo["ProposedDepartureTime"] = $"{InitialInfo["ProposedDepartureTime"]} [+{difference}]";
     }
 
-   public string GetInfo(string request)
+   public string? GetInfo(string request)
    {
         if (InitialInfo.ContainsKey(request))
         {
@@ -186,6 +212,12 @@ public class DReader
                 builder.Append("\n\t" + key);
             }
             return builder.ToString();
+        }
+        else if (request.Equals("Tokens"))
+        {
+            List<string> keys = InitialInfo.Keys.ToList<string>();
+            keys.Sort();
+            return string.Join(", ", keys);
         }
         return "Information not available or invalid key";
    }
